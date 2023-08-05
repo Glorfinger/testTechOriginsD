@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: "traefik:v2.4"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080" # Port pour accéder au dashboard Traefik (optionnel)
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami1:
+    image: "containous/whoami"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami1.rule=Host(`first.localhost`)"
+      - "traefik.http.routers.whoami1.entrypoints=web"
+
+  whoami2:
+    image: "containous/whoami"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami2.rule=Host(`second.localhost`)"
+      - "traefik.http.routers.whoami2.entrypoints=web"
