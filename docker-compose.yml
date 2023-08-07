@@ -13,23 +13,17 @@ services:
       - "8080:8080" 
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    networks:
-      - traefik_network
 
   whoami1:
     image: "containous/whoami"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami1.rule=Host(`first.localhost`)"
-      - "traefik.http.routers.whoami1.entrypoints=web"
-    networks:
-      - traefik_network  
+      - "traefik.http.routers.whoami1.entrypoints=web"  
 
   whoami2:
     image: "containous/whoami"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami2.rule=Host(`second.localhost`)"
-      - "traefik.http.routers.whoami2.entrypoints=web"
-    networks:
-      - traefik_network  
+      - "traefik.http.routers.whoami2.entrypoints=web" 
