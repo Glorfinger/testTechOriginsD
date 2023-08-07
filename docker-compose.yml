@@ -2,24 +2,24 @@ version: "3.8"
 
 services:
   traefik:
-    image: "traefik:v2.4"
+    image: "traefik:v2.4" #Nom de l'image Docker utilisé pour ce service
     command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    ports:
-      - "80:80"
-      - "8080:8080" 
+      - "--api.insecure=true"  #Active l'API Traefik en mode non securisé
+      - "--providers.docker=true" #Active la découverte automatique des services Docker à exposer
+      - "--providers.docker.exposedbydefault=false" #Désactive l'exposition automatiqe des services
+      - "--entrypoints.web.address=:80" #Définit l'entrée du point d'écoute pour Traefik sur le port 80
+    ports: #Lie les ports du conteneur à ceux de l'hôte
+      - "80:80" #Lie le port 80 du conteneur Traefik au port 80 de l'hôte
+      - "8080:8080" #Lie le port 8080 du conteneur Traefik au port 8080 de l'hôte. Ceci est optionnel et permet d'accéder au dashboard Traefik via le navigateur
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" #Montage du socket Docker pour permettre à Traefik de communiquer avec le démon Docker, :ro = "read-only"
 
   whoami1:
     image: "containous/whoami"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.whoami1.rule=Host(`first.localhost`)"
-      - "traefik.http.routers.whoami1.entrypoints=web"  
+      - "traefik.enable=true" #Active Traefik en tant que reverse proxy pour ce service
+      - "traefik.http.routers.whoami1.rule=Host(`first.localhost`)" #Définit une règle de routage pour le domaine first.localhost
+      - "traefik.http.routers.whoami1.entrypoints=web" #Définit l'entrée du point d'écoute pour ce service, le service répondra aux requêtes entrantes sur l'entrée web  
 
   whoami2:
     image: "containous/whoami"
