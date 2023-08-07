@@ -10,9 +10,11 @@ services:
       - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
-      - "8080:8080" # Port pour accéder au dashboard Traefik (optionnel)
+      - "8080:8080" 
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    networks:
+      - traefik_network
 
   whoami1:
     image: "containous/whoami"
@@ -20,6 +22,8 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami1.rule=Host(`first.localhost`)"
       - "traefik.http.routers.whoami1.entrypoints=web"
+    networks:
+      - traefik_network  
 
   whoami2:
     image: "containous/whoami"
@@ -27,3 +31,5 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.whoami2.rule=Host(`second.localhost`)"
       - "traefik.http.routers.whoami2.entrypoints=web"
+    networks:
+      - traefik_network  
